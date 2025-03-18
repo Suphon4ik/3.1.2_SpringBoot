@@ -14,7 +14,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -22,30 +21,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.getAllUsers();
     }
 
     @Override
     @Transactional
     public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+        return userRepository.getUserById(id);
     }
 
     @Override
     @Transactional
     public void saveUser(User user) {
-        userRepository.save(user);
+        userRepository.saveUser(user);
     }
 
     @Override
     @Transactional
     public void updateUser(User user) {
-        userRepository.save(user);
+        userRepository.updateUser(user);
     }
 
     @Override
     @Transactional
     public void deleteUserById(Long id) {
-        userRepository.deleteById(id);
+        userRepository.deleteUserById(id);
     }
 }

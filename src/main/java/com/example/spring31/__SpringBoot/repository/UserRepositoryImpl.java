@@ -1,6 +1,8 @@
 package com.example.spring31.__SpringBoot.repository;
 
 import com.example.spring31.__SpringBoot.model.User;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
@@ -9,32 +11,38 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class UserRepositoryImpl {
+public class UserRepositoryImpl implements UserRepository {
 
-    private final UserRepository userRepository;
+    @PersistenceContext
+    private EntityManager em;
 
-    @Autowired
-    public UserRepositoryImpl(@Lazy UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
+    @Override
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return em.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
 
+    @Override
     public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+        User user = em.find(User.class, id);
+        return Optional.ofNullable(user);
     }
 
+    @Override
     public void saveUser(User user) {
-        userRepository.save(user);
+        em.persist(user);
     }
 
+    @Override
     public void deleteUserById(Long id) {
-        userRepository.deleteById(id);
+        User user = em.find(User.class, id);
+        if (user != null) {
+            em.remove(user);
+        }
     }
 
+    @Override
     public void updateUser(User user) {
-        userRepository.save(user);
+        em.merge(user);
     }
 }
